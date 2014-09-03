@@ -3,38 +3,44 @@
 #include <errno.h>
 #include <string.h>
 
+void getPrompt( char* );
 
 int main() {
 
-  char cwd[1024];
-  char host[1024];
-  char userName[1024];
   char prompt[4000]; 
 
-    
-    
-    /* Get the Current Working Directory */
-    getcwd(cwd, sizeof(cwd));
-    
-    /* Get the hostname */
-    gethostname(host, sizeof(host));
-    
-    /* Get the userName */
-    strcpy(userName, getlogin());
-    
-    /* Concatenate the userName, host and working directory */
-    strcat(prompt, userName);
-    strcat(prompt, "@");
-    strcat(prompt, host);
-    strcat(prompt, ":");
-    strcat(prompt, cwd);
-    strcat(prompt, " $");
-    fprintf(stdout, "%s\n", prompt);
-        
+  getPrompt(prompt);
 
-    
-    
-    return 0;
+  fprintf(stdout, "%s\n", prompt);
+
+  return 0;
 
 }
+
+void getPrompt( char* p )
+/* inside the function, it's a pointer your dealing with */
+ {
+
+  char c[1024];
+  char h[1024];
+  char u[1024];
+
+    /* Get the Current Working Directory */
+    getcwd(c, sizeof(c));
+    
+    /* Get the hostname */
+    gethostname(h, sizeof(h));
+    
+    /* Get the userName */
+    strcpy(u, getlogin());
+    
+    /* Concatenate the userName, host and working directory */
+    strcat(p, u);
+    strcat(p, "@");
+    strcat(p, h);
+    strcat(p, ":");
+    strcat(p, c);
+    strcat(p, " $");
+}
+
 
