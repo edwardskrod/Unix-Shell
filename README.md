@@ -15,7 +15,7 @@
 1. ./shell
 
 # Exiting the Shell
-
+1. exit or Control+D
 
 # Division of Responsibilities
 
