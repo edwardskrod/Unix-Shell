@@ -1,4 +1,6 @@
 
+#include "program.h"
+
 /* The following function is the equivalent of C++'s constructor */
 inline Program * theProgram( ){
 

@@ -1,3 +1,4 @@
+#pragma once
 
 /*---------------POSIX VARIABLES -----------------------*/
 /* http://linux.die.net/man/3/sysconf                   */
@@ -34,3 +35,22 @@ following code allows us to use the const on non-standard machines  */
     #define PATH_MAX 255
   #endif
 #endif
+
+/** Global Variables **/
+
+/** ProgramStatus:  tracks the status of the Program
+*   Continue - continue to run the program
+*   Exit - Exit the program before the next iteration
+*   Error - An Error was detected.  Exit with Error status 
+*/
+enum ProgramStatus {
+  CONTINUE,
+  EXIT,
+  ERROR
+};
+typedef enum ProgramStatus ProgramStatus;
+
+// cwd: current working directory
+// pwd: previous working directory
+char cwd[ PATH_MAX + 1 ];
+char pwd[ PATH_MAX + 1];

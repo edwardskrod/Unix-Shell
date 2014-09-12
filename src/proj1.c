@@ -7,16 +7,6 @@
 #include "handleInput.h"
 #include "handleCommand.h"
 
-
-/*  Global variables / structs   */
-typedef struct Total
-{
-  int pid;
-  int directionToken;
-  char ** argument;
-  int background;
-} Total;
-
 /*  Function Declarations  */
 void printPrompt(  );
 
