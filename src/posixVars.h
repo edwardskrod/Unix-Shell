@@ -49,6 +49,7 @@ enum ProgramStatus {
   ERROR
 };
 typedef enum ProgramStatus ProgramStatus;
+ProgramStatus status;
 
 // cwd: current working directory
 // pwd: previous working directory

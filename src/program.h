@@ -22,7 +22,8 @@ struct Program {
 	
 };
 
-// typedef the struct 
+// typedef the struct so that anytime we type Program, 
+// the compiler reads "struct Program"
 typedef struct Program Program;
 
 /*  Constructor declaration     */

@@ -8,5 +8,8 @@
 #include <stddef.h> /* NULL */
 #include "posixVars.h"
 #include "handleInput.h"
+#include "program.h"
 
+/* forward definitions */
 void handleCommand(TokenList*);
+void killZombieProcesses();

@@ -2,33 +2,57 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <stddef.h>
 #include <malloc.h>
+#include <stdlib.h>
+
 #include "posixVars.h"
 #include "handleInput.h"
 #include "handleCommand.h"
 
 /*  Function Declarations  */
-void printPrompt(  );
-
+void printPrompt( void );
+void exitShell( void );
 int main() {
 
+  atexit( exitShell );
+  
   TokenList * tList;
-  ProgramStatus status = CONTINUE;
+  status = CONTINUE;
   getcwd(cwd, PATH_MAX);
-  while (  status == CONTINUE  ) {
 
+  while (  status == CONTINUE  ) {
+  
     printPrompt();
+
 
     tList = storeInput();
 
-    handleCommand(tList);
 
-    /*  free derp */
-    free(tList);
+    handleCommand(tList);
+  
+
+  // Free memory
+   int i;
+   for (i = 0; i < MAX_TOKENS; ++i ) {
+    free(tList->parseStorage[i]);
+   }
+
+  free(tList->parseStorage);
+  free(tList);
+  tList = NULL;  
+
+  //printf("At the end of the while loop.\n");
+
  }
 
 
-  return 0;
+  if ( status != ERROR )
+    return EXIT_SUCCESS;
+  else
+    return EXIT_FAILURE;
+
+  
 }
 
 void printPrompt( )
@@ -62,76 +86,9 @@ format <username>@<hostname>:<working_directory> $
 
 }
 
+void exitShell( ) {
 
-
-/**********************  parseInput   ****************************/
-/*
-Total* parseInput( TokenList t  ) {
-
-  int pipeCounter = 1;
-  int i = 0;
-  int j = 0;
-  int increment = 0;
-
-  for(i = 0; i < t.count; i++) {
-
-      if(strcmp(t.parseStorage[i],"|") == 0 || 
-        strcmp(t.parseStorage[i],">") == 0 || 
-        strcmp(t.parseStorage[i],"<") == 0 || 
-        strcmp(t.parseStorage[i], ">>") == 0) {
-        
-        pipeCounter++;    
-      }
-  }
-
-
-  // Allocating size for the Total struct, "parse"
-  Total * parse = malloc( sizeof(Total) *  (long unsigned int)(pipeCounter + 1) );
-  if(pipeCounter > 1) {
-
-        for(i = 0; i < pipeCounter; i++) {
-      
-        j = 0;
-
-          while(strcmp(t.parseStorage[increment], "|") != 0 
-              && strcmp(t.parseStorage[increment], ">") != 0
-              && strcmp(t.parseStorage[increment], "<") != 0 
-              && strcmp(t.parseStorage[increment], ">>") != 0) {
-
-              parse[i].argument[j] = t.parseStorage[increment]; 
-              j++;
-              increment++;
-
-            if(increment == t.count) {
-              break;
-            }
-          }
-
-          if(increment == t.count) {  // break out of the forloop
-            break;
-          }
-
-          if(strcmp(t.parseStorage[increment], ">") == 0) {
-            parse[i].directionToken = 2;
-            increment++;
-          }
-          else if(strcmp(t.parseStorage[increment], ">>") == 0) {
-            parse[i].directionToken = 3;
-            increment++;
-          }
-          else if(strcmp(t.parseStorage[increment], "|") == 0) {
-            parse[i].directionToken = 1;
-            increment++;
-          }
-          else if(strcmp(t.parseStorage[increment], "<") == 0) {
-            parse[i].directionToken = 4;
-            increment++;
-          }
-          else {  } 
-        }
-    } // if pipecounter > 1  
-
-    return parse;
+  printf ("\nExiting shell.\n" );
+  killZombieProcesses( );
 
 }
-*/

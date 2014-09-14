@@ -1,17 +1,21 @@
 #include <string.h>
 #include <stdio.h>
 #include <malloc.h>
+#include <stddef.h> /* NULL */
 #include "handleInput.h"
+#include <stdlib.h>
 
 TokenList* storeInput( ) {
 
-  TokenList * tokenList = malloc(sizeof(TokenList) * 1);
+  TokenList * tokenList = malloc(sizeof(TokenList));
   
-  tokenList->parseStorage = malloc( sizeof(char* ) * 100);
+  tokenList->parseStorage = (char**)malloc( sizeof(char*) * MAX_TOKENS);
+  
   int j = 0;
-  while (j < 50 ) {
+  while (j < MAX_CHARS ) {
 
-    tokenList->parseStorage[j] = malloc( sizeof( char *) * 2);
+    tokenList->parseStorage[j] = (char*)malloc( sizeof(char) * MAX_CHARS);
+    strcpy(tokenList->parseStorage[j], "");
     j++;
   }
   
@@ -42,5 +46,7 @@ TokenList* storeInput( ) {
 
   }
  
+  tokenList->parseStorage[tokenList->count] = NULL;
+
   return tokenList;
 }

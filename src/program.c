@@ -1,10 +1,10 @@
-
+#include <stddef.h> /* NULL */
 #include "program.h"
 
 /* The following function is the equivalent of C++'s constructor */
-inline Program * theProgram( ){
+Program * theProgram( ){
 
-	Program *program = (Program * )malloc( sizeof( Program ) );
+	Program * program = (Program * )malloc( sizeof( Program ) );
 
 	program->name = NULL;
 	program->argc = 0;
