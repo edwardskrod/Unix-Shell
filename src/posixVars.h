@@ -1,13 +1,17 @@
+/**
+ * posixVars
+ * Description: Many Linux systems define the sizes for host name, path 
+ * name, etc. in a file called posix1_lim.h.   If at all possible, 
+ * we wanted to use these sizes in our shell.  However, in the case 
+ * that these sizes are not defined, we needed to define them ourselves 
+ * in the posixVars.h header file.  We also defined a few global variables,
+ * such as the current working directory and previous working directory 
+ * here as well.
+ * Reference:  http://linux.die.net/man/3/sysconf  
+ */
 #pragma once
 
-/*---------------POSIX VARIABLES -----------------------*/
-/* http://linux.die.net/man/3/sysconf                   */
-/* The following _POSIX define statements are included in 
-LINUX builds from the posix1_lim.h file.  To make the code
-useable on non-standard builds, we have created define statements.
-
-LINUX defines _POSIX_HOST_NAME_MAX as 255.  
-The following code allows us to use the const on non-standard machines  */
+/* Linprog defines _POSIX_HOST_NAME_MAX as 255.  */
 #ifndef HOST_NAME_MAX
   #ifdef _POSIX_HOST_NAME_MAX
     #define HOST_NAME_MAX _POSIX_HOST_NAME_MAX
@@ -16,8 +20,7 @@ The following code allows us to use the const on non-standard machines  */
   #endif
 #endif
 
-/* LINUX defines _POSIX_LOGIN_NAME_MAX as 9.  The 
-following code allows us to use the const on non-standard machines  */
+/* Linprog defines _POSIX_LOGIN_NAME_MAX as 9. */
 #ifndef LOGIN_NAME_MAX
   #ifdef _POSIX_LOGIN_NAME_MAX
     #define LOGIN_NAME_MAX _POSIX_LOGIN_NAME_MAX
@@ -26,8 +29,7 @@ following code allows us to use the const on non-standard machines  */
   #endif
 #endif
 
-/* LINUX defines _POSIX_LOGIN_NAME_MAX as 255.  The 
-following code allows us to use the const on non-standard machines  */
+/* Linprog defines _POSIX_LOGIN_NAME_MAX as 255. */
 #ifndef PATH_MAX
   #ifdef _POSIX_PATH_MAX
     #define PATH_MAX _POSIX_PATH_MAX
@@ -37,7 +39,6 @@ following code allows us to use the const on non-standard machines  */
 #endif
 
 /** Global Variables **/
-
 /** ProgramStatus:  tracks the status of the Program
 *   Continue - continue to run the program
 *   Exit - Exit the program before the next iteration
@@ -49,9 +50,8 @@ enum ProgramStatus {
   ERROR
 };
 typedef enum ProgramStatus ProgramStatus;
-ProgramStatus status;
 
-// cwd: current working directory
-// pwd: previous working directory
-char cwd[ PATH_MAX + 1 ];
-char pwd[ PATH_MAX + 1];
+ProgramStatus status;
+char cwd[ PATH_MAX + 1 ]; // cwd: current working directory
+char pwd[ PATH_MAX + 1]; // pwd: previous working directory
+

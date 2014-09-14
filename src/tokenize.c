@@ -1,5 +1,14 @@
-#include "tokenize.h"
+/**
+ * tokenize
+ * Description: Receives the $PATH environment variable and 
+ * tokenizes it based upon the ":" delimiter into an array of 
+ * C strings.  We check this array for the location of an executable
+ * in handleCommand.c
+ * Reference:  Adapted from code written by Mark Stanovich,
+ * http://ww2.cs.fsu.edu/~stanovic
+ */
 
+#include "tokenize.h"
 char ** pathParser()
 {
 

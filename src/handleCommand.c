@@ -1,11 +1,14 @@
+/**
+ * handleCommand
+ * Description: Main resource for executing built-ins and 
+ * executable system binaries such as "ls" or "grep."
+ * Receives the user's input in the form of a list of tokens. 
+ * Executes the commands.
+ */
+
 #include "handleCommand.h"
 #include "tokenize.h"   // SIZE = 100
 
-/**
- * handleCommand
- * Description: executes the command
- *               
- */
 void handleCommand(TokenList *tList){
   
 

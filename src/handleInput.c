@@ -1,3 +1,9 @@
+/**
+ * handleInput
+ * Description: Stores the user's input into an array of C
+ * strings which we call "tokens."  Tracks the number of tokens.
+ */
+
 #include <string.h>
 #include <stdio.h>
 #include <malloc.h>
