@@ -4,8 +4,14 @@
 #include <stddef.h> /* NULL */
 #include "posixVars.h"
 
-/*   Defines a Program       */
+enum Redirection {
+	IN,
+	OUT,
+	DEFAULT
+};
+typedef enum Redirection Redirection;
 
+/*   Defines a Program       */
 struct Program {
 
 	char *name;
@@ -14,11 +20,13 @@ struct Program {
 					// We are limiting it to 50
 	int argc;		// argc holds the number of args, including the name
 
-	/*   We need to leave room for a number of other variables such
-	as a pointer to the next program after a pipe 
-	We also need to define the standard in and out (STDIN_FILENO, STDOUT_FILENO)
+	char *redirectResource;
+	Redirection redirect;
+	int in;
+	int out;
+	struct Program *next;  // points to the next program
+	
 
-	*/
 	
 };
 
