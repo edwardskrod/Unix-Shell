@@ -1,3 +1,8 @@
+#deviation fromnominal requirements
+# Known errors and / or missing features
+# description of any bonus implemented
+
+
 # Project 1:  Implementing a Shell
 
 # Developers:  Edward Skrod, Sean Adams
@@ -21,6 +26,9 @@
 
 # Division of Responsibilities
 
+1. To do
+
+
 
 # Files
 1. makefile
@@ -36,12 +44,18 @@
 
 4. handleCommand.h, handleCommand.c
 	Main resource for executing built-ins and executable system binaries such as "ls" or "grep."
-	Receives the user's input in the form of a list of tokens.  Executes the commands.
+	Receives the user's input in the form of a list of tokens.  Executes the commands.  Also performs the ioacct command which gets the total bytes read and written by a process.
 
 5. posixVars.h
 	Many Linux systems define the sizes for host name, path name, etc. in a file called posix1_lim.h.   If at all possible, we wanted to use these sizes in our shell.  However, in the case that these sizes are not defined, we needed to define them ourselves in the posixVars.h header file.  We also defined a few global variables, such as the current working directory and previous working directory here as well.
+
 6. tokenize.h, tokenize.c
 	Receives the $PATH environment variable and tokenizes it based upon the ":" delimiter into an array of C strings.  We check this array for the location of an executable in handleCommand.c
 
 7. program.h, program.c
 	Defines a program and instantiates it witl default values upon creation.  Used by handleCommand.c when the user input is not a built-in but rather an executable.
+
+8. executeCommand.h, executeCommand.c
+	Execute command executes the binary.  If the binary is not a 
+	direct path, it calls getFinalPath() to determine where the binary resides.
+
