@@ -2,6 +2,9 @@
 
 #include <malloc.h>  /* malloc */
 #include <stddef.h> /* NULL */
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 #include "posixVars.h"
 
 enum Redirection {
@@ -20,10 +23,7 @@ struct Program {
 					// We are limiting it to 50
 	int argc;		// argc holds the number of args, including the name
 
-	char *redirectResource;
 	Redirection redirect;
-	int in;
-	int out;
 	struct Program *next;  // points to the next program
 	
 
@@ -36,3 +36,6 @@ typedef struct Program Program;
 
 /*  Constructor declaration     */
 Program * theProgram( );
+
+
+

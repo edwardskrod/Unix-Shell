@@ -15,14 +15,15 @@ Program * theProgram( ){
 
 	program->name = NULL;
 	program->argc = 0;
-	program->redirectResource = NULL;
-	program->redirect = DEFAULT;
+	//program->redirectResource = NULL;
+	//program->redirect = DEFAULT;
 	program->next = NULL;
-	program->in = STDIN_FILENO;     // 0
-	program->out = STDOUT_FILENO;   // 1
+	//program->in = STDIN_FILENO;     // 0
+	//program->out = STDOUT_FILENO;   // 1
 
 	for (int i = 0; i < 51; ++i ) {
 		program->argv[i] = NULL;
 	}
 		return program;
 }
+

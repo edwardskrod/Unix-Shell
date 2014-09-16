@@ -16,6 +16,7 @@
 #include "posixVars.h"
 #include "handleInput.h"
 #include "handleCommand.h"
+#include "commandList.h"
 
 /*  Function Declarations  */
 void printPrompt( void );
@@ -25,6 +26,8 @@ int main() {
   atexit( exitShell );
   
   TokenList * tList;
+  CommandList * newCommandList;
+
   status = CONTINUE;
   getcwd(cwd, PATH_MAX);
 
@@ -36,8 +39,17 @@ int main() {
     tList = storeInput();
 
 
+    //parseCommandList( newCommandList, tList );
+
+
+
+    // We need to redo handleCommand to receive a CommandList
+
     handleCommand(tList);
   
+
+
+
 
   // Free memory
    int i;
@@ -48,6 +60,8 @@ int main() {
   free(tList->parseStorage);
   free(tList);
   tList = NULL;  
+
+  // Free the CommandList
 
   //printf("At the end of the while loop.\n");
 
