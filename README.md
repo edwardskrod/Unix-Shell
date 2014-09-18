@@ -26,8 +26,7 @@
 
 # Division of Responsibilities
 
-1. To do
-
+1. Sean and Edward divided the entire project equally except that Edward handled the memory leaks using Valgrind and Sean did the report.  Otherwise, the team members met and coded the entire project together (with a few small, not notable, exceptions).
 
 
 # Files
@@ -58,4 +57,7 @@
 8. executeCommand.h, executeCommand.c
 	Execute command executes the binary.  If the binary is not a 
 	direct path, it calls getFinalPath() to determine where the binary resides.
+
+9. commandList.h, commandList.c
+	Defines a list of programs to be executed as an entire command.   CommandList.c  parses the TokenList into programs.
 

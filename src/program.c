@@ -14,16 +14,13 @@ Program * theProgram( ){
 	Program * program = (Program * )malloc( sizeof( Program ) );
 
 	program->name = NULL;
-	program->argc = 0;
-	//program->redirectResource = NULL;
-	//program->redirect = DEFAULT;
-	program->next = NULL;
-	//program->in = STDIN_FILENO;     // 0
-	//program->out = STDOUT_FILENO;   // 1
-
 	for (int i = 0; i < 51; ++i ) {
-		program->argv[i] = NULL;
+	  program->argv[i] = (char *)malloc(sizeof(char)*50);
 	}
-		return program;
+	program->argc = 0;
+	program->redirect = DEFAULT;
+	program->next = NULL;
+	
+	return program;
 }
 

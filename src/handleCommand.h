@@ -10,8 +10,9 @@
 #include "handleInput.h"
 #include "program.h"
 #include "executeCommand.h"
+#include "commandList.h"
 
 /* forward definitions */
-void handleCommand(TokenList*);
+void handleCommand(Program * p);
 //void ioacct( pid_t p );
 void killZombieProcesses();

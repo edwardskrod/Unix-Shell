@@ -12,7 +12,6 @@
 #include <stddef.h>
 #include <malloc.h>
 #include <stdlib.h>
-
 #include "posixVars.h"
 #include "handleInput.h"
 #include "handleCommand.h"
@@ -25,47 +24,57 @@ int main() {
 
   atexit( exitShell );
   
-  TokenList * tList;
-  CommandList * newCommandList;
+
 
   status = CONTINUE;
   getcwd(cwd, PATH_MAX);
 
   while (  status == CONTINUE  ) {
   
+  TokenList * tList;
+  CommandList * newCommandList = theCommandList();
+
     printPrompt();
 
-
+    
     tList = storeInput();
+    parseCommandList( newCommandList, tList );
+   
 
 
-    //parseCommandList( newCommandList, tList );
-
-
-
-    // We need to redo handleCommand to receive a CommandList
-
-    handleCommand(tList);
-  
-
-
-
-
-  // Free memory
+   // Free Token List memory
    int i;
    for (i = 0; i < MAX_TOKENS; ++i ) {
-    free(tList->parseStorage[i]);
+       free(tList->parseStorage[i]);
    }
+  
+   free(tList->parseStorage);
+   free(tList);
+   tList = NULL;  
+   
+   CommandList * head = newCommandList;
+   Program * p;
+   while(newCommandList->program != NULL) {
+         handleCommand(newCommandList->program);
+         newCommandList->program = newCommandList->program->next; 
+  }
 
-  free(tList->parseStorage);
-  free(tList);
-  tList = NULL;  
 
-  // Free the CommandList
+     // Free the Program Memory
+   while(head->program != NULL) {
+       p = head->program;
+       for(i = 0; i < 51; i++) {
+	       free(p->argv[i]);
+	     }
+       free(p);
+       head->program = head->program->next;
+     }
 
-  //printf("At the end of the while loop.\n");
+     free(head);
 
- }
+     fflush(stdout);
+  }
+
 
 
   if ( status != ERROR )

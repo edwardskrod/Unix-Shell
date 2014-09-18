@@ -11,9 +11,10 @@
 #include "program.h"
 #include "handleCommand.h"
 #include "tokenize.h"   
+#include "commandList.h"
 
 void ioacct( pid_t p );
-void executeCommand(TokenList * tList, Program * p, int isIoacct, 
+void executeCommand(Program * p, int isIoacct, 
 					char ** parsedPath, int isBackgroundProgram);
-void execute( char * name, char ** args , int i, int j );
-char * getFinalPath( char ** parsedPath, TokenList * tList );
+void execute( char * name, char ** args , int i, int j, Program * program );
+char * getFinalPath( char ** parsedPath, Program * p );

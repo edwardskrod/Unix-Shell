@@ -1,4 +1,5 @@
 #include "executeCommand.h"
+#include "commandList.h"
 
 /**
 *  executeCommand
@@ -6,22 +7,29 @@
 * direct path, it calls getFinalPath() to determine where the binary resides.
 *
 */
-void executeCommand(TokenList * tList, Program * newProgram,  int isIoacct, 
+void executeCommand(Program * newProgram,  int isIoacct, 
 					char ** parsedPath, int isBackgroundProgram){
+  
+  if(newProgram->argv[0] == NULL)
+    {
 
+      return;
+    }
+  else
+    {
 	/* If direct path */	
 	if (newProgram->name[0] == '/') {  
 
-	execute( newProgram->name, newProgram->argv, isIoacct, isBackgroundProgram );
+	  execute( newProgram->name, newProgram->argv, isIoacct, isBackgroundProgram, newProgram );
 
 	} else  {
 	    
-	char * finalPath = getFinalPath( parsedPath, tList );
-	execute(finalPath, newProgram->argv, isIoacct, isBackgroundProgram );
-   
-	free(finalPath);
+		char * finalPath = getFinalPath( parsedPath, newProgram );
+		execute(finalPath, newProgram->argv, isIoacct, isBackgroundProgram, newProgram );
+   		free(finalPath);
 	
 	}
+    }
 }
 
 /**
@@ -31,14 +39,12 @@ void executeCommand(TokenList * tList, Program * newProgram,  int isIoacct,
 * Must free the final Path in main function
 * Called by executeCommand
 */
-char * getFinalPath( char ** parsedPath, TokenList * tList ) {
-
+char * getFinalPath( char ** parsedPath, Program * newProgram ) {
 	char * fPath = malloc( sizeof(char * ) * 10 );;
     int j = 0;
-        
      for(j = 0; j < 15; ++j) {
         char * currentPath = malloc( sizeof(char * ) * 10 );
-        sprintf(currentPath, "%s/%s",parsedPath[j], tList->parseStorage[0]);
+        sprintf(currentPath, "%s/%s",parsedPath[j], newProgram->argv[0]);
             
         if(access(currentPath, F_OK) == 0) {
             strcpy(fPath, currentPath);
@@ -57,36 +63,75 @@ char * getFinalPath( char ** parsedPath, TokenList * tList ) {
 * execute
 * Description:  executes the process
 */
-void execute( char * name, char ** args, int isIoacct, int isBackgroundProgram  ) {
-
- 		pid_t child;
+void execute( char * name, char ** args, int isIoacct, int isBackgroundProgram, Program * program  ) {
+		
 	    int rtn;
+	    if(program->redirect == IN){
+	    	printf("\nError executing redirect. %s\n", name);
 
-	    child = fork();
+	    }
+	    else if(program->redirect == OUT) {
+	    	printf("\nError executing redirect. %s\n", name);
 
-	    if (child == 0) {
+	    }
+	    else if(program->redirect == APPEND)  {
+	    	printf("\nError executing redirect. %s\n", name);
 
-	        rtn = execv(name, args);
-
-	        if ( rtn != 0 ) {
-
-	         printf("\nError executing the program. %s\n", name);
-	        }
-
+	    }
+	    else if(program->redirect == PIPE) {
+			pid_t child;
+			int fileD[2];
+			pipe(fileD);
+			child = fork();
+				if(child == 0) {
+				    close(fileD[0]);
+				    close(1);
+				    dup2(fileD[1],1);
+				    rtn =  execv(name, args);
+				    if(rtn != 0) {
+						printf("\nError executing the PIPE  program. %s\n", name);
+				    }
+				} else {
+				    wait(&child);
+				    close(fileD[1]);
+				    close(0);
+				    dup2(fileD[0], 0);
+				    rtn =  execv(program->next->name, program->next->argv);
+				    if (rtn != 0) {
+						printf("\nError executing the PIPE  program. %s\n", name);
+				      }
+				  }
+		
 	    } else {
 
-	        if ((isIoacct) && (!isBackgroundProgram)){
-	           ioacct(child);
-	        } else if (isBackgroundProgram) {
+	    // Normal Process
+
+		pid_t child;
+		child = fork();
+		if (child == 0) {
+
+		  rtn = execv(name, args);
+
+		  if ( rtn != 0 ) {
+		  
+		    printf("\nError executing the program. %s\n", name);
+		  }
+
+		} else {
+
+		  if ((isIoacct) && (!isBackgroundProgram)){
+		    ioacct(child);
+		  } else if (isBackgroundProgram) {
 	            pid_t child_finished;
 	            child_finished = waitpid(-1, (int *)NULL, WNOHANG);
 
-	        } else {
+		  } else {
 	            // Not a background, not ioacct
 	            pid_t child_finished;
 	            child_finished = waitpid(-1, (int *)NULL, 0);
-	        }
-	    }
+		  }
+		}
+	}
 }
 
 /**

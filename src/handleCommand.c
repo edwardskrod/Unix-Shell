@@ -9,18 +9,18 @@
 #include "handleCommand.h"
 #include "tokenize.h"   
 
-void handleCommand(TokenList *tList){
+void handleCommand(Program * program){
   
 
-    if (tList->count == 0) {
+    if (program->argc == 0) {
       	// no command, so just return
     	return;
     } 
-    else if (strcmp(tList->parseStorage[0], "exit") == 0) {
+    else if (strcmp(program->argv[0], "exit") == 0) {
+      
+    	if ((program->argv[1] != NULL) && (strcmp(program->argv[1], "") != 0)) {
 
-    	if ((tList->parseStorage[1] != NULL) && (strcmp(tList->parseStorage[1], "") != 0)) {
-
-	        int exit_value = atoi(tList->parseStorage[1]);
+	        int exit_value = atoi(program->argv[1]);
             status = EXIT;
 	        exit(exit_value);
 	    }
@@ -30,33 +30,33 @@ void handleCommand(TokenList *tList){
 	    	exit(EXIT_SUCCESS);
 	    }
     }
-    else if ( strcmp(tList->parseStorage[0], "cd") == 0 ) {   	
+    else if ( strcmp(program->argv[0], "cd") == 0 ) {   	
 
         int returnVal = 0;
-
-        if (  (tList->parseStorage[1] == NULL) ||
-              (strcmp(tList->parseStorage[1], "~") == 0) ||
-    		  (strcmp(tList->parseStorage[1], "~/") == 0) ||
-			  (strcmp(tList->parseStorage[1], "") == 0)) {
+	
+        if (  (program->argv[1] == NULL) ||
+              (strcmp(program->argv[1], "~") == 0) ||
+    		  (strcmp(program->argv[1], "~/") == 0) ||
+			  (strcmp(program->argv[1], "") == 0)) {
 
                 strncpy(pwd, cwd, sizeof(pwd));
 				chdir(getenv("HOME"));
                 getcwd(cwd, PATH_MAX);
 		}
-		else if (strcmp(tList->parseStorage[1], "-") == 0){
+		else if (strcmp(program->argv[1], "-") == 0){
 
             returnVal = chdir(pwd);
 			strncpy(pwd, cwd, sizeof(pwd));
             getcwd(cwd, PATH_MAX);
         }
 
-        else if (strcmp(tList->parseStorage[1], ".") == 0) {
+        else if (strcmp(program->argv[1], ".") == 0) {
             
             // Set the previous working directory to the current working dir
             getcwd(pwd, PATH_MAX);
         }
 
-        else if ( strcmp(tList->parseStorage[1], "..") == 0)  {
+        else if ( strcmp(program->argv[1], "..") == 0)  {
 
             strncpy(pwd, cwd, sizeof(pwd));
             char * ptr;
@@ -69,7 +69,7 @@ void handleCommand(TokenList *tList){
 
         }
         else {
-            returnVal = chdir(tList->parseStorage[1]);
+            returnVal = chdir(program->argv[1]);
         }
         
         if (returnVal == -1) {
@@ -79,74 +79,59 @@ void handleCommand(TokenList *tList){
 
         int isIoacct = 0;
 
-        if ( strcmp(tList->parseStorage[0], "ioacct") == 0 ) {
+        if ( strcmp(program->argv[0], "ioacct") == 0 ) {
 
             int lcv = 1;
-            while (tList->parseStorage[lcv] != NULL) {
+            while (program->argv[lcv] != NULL) {
 
-                strcpy(tList->parseStorage[lcv - 1], tList->parseStorage[ lcv ]);
+                strcpy(program->argv[lcv - 1], program->argv[ lcv ]);
                 ++lcv;
             }
-            tList->parseStorage[lcv -1 ] = NULL;
+            program->argv[ lcv - 1 ] = NULL;
 
             // set Flag
             isIoacct = 1;
 
         }
            
-    
-        Program * newProgram = theProgram();
-        char ** parsedPath = pathParser();
+
+	    char ** parsedPath = pathParser();
         int isBackgroundProgram;            // 1 if BG, 0 if not
 
-        // populate newProgram->name with the first arg
-        newProgram->name = tList->parseStorage[0];
 
-        // The first arg, by convention, is the name of the executable
-        newProgram->argv[0] = tList->parseStorage[0];
-
-        // Get args - start at position 1
-        int lcv = 1; // loop control variable
-        while ((tList->parseStorage[lcv] != NULL) && (strcmp(tList->parseStorage[lcv], "") != 0 )) {
-            newProgram->argv[lcv] = tList->parseStorage[lcv];
-            ++newProgram->argc;
-            ++lcv;
-
-        }
-
-        // add a null 
-        newProgram->argv[newProgram->argc + 1] = NULL;
-
+	
         /*  Check for the &  */
-        if ( strrchr(newProgram->argv[newProgram->argc], '&')  == NULL  ){
+        if ( strrchr(program->argv[program->argc - 1], '&')  == NULL  ){
             isBackgroundProgram = 0;
         }
         else { 
-
+	  
             isBackgroundProgram = 1;
             char * ptr;
-            ptr = strchr(newProgram->argv[newProgram->argc], '&');
-            char * newString = strstr(newProgram->argv[newProgram->argc], ptr);
+            ptr = strchr(program->argv[program->argc - 1], '&');
+            char * newString = strstr(program->argv[program->argc - 1], ptr);
             strncpy(newString, "", sizeof(newString));
-            puts(newProgram->argv[newProgram->argc]);
+            puts(program->argv[program->argc - 1]);
 
-            if (strcmp(newProgram->argv[newProgram->argc], "") == 0) {
-                newProgram->argv[newProgram->argc] = NULL;
+            if (strcmp(program->argv[program->argc - 1], "") == 0) {
+                program->argv[program->argc - 1] = NULL;
             }
 
         }
   
         /*  EXECUTE THE COMMAND  */
-        executeCommand( tList, newProgram, isIoacct, parsedPath, isBackgroundProgram );
+        executeCommand(  program, isIoacct, parsedPath, isBackgroundProgram  );
          
 
-        /*  FREE ALL THA MEMORIES   */
+        /*  FREE ALL THA MEMORIES in PARSED PATH  */
         int k;
         for (k = 0; k < SIZE; ++k ){
             free(parsedPath[k]);
         } 
         free(parsedPath);
-        free(newProgram);
+        
+	//WE COMMENTED THIS OUT
+	//free(newProgram);
 
     } // end executables
 }  // End handleCommand.c

@@ -8,9 +8,11 @@
 #include "posixVars.h"
 
 enum Redirection {
+        DEFAULT,
 	IN,
 	OUT,
-	DEFAULT
+	APPEND,
+	PIPE
 };
 typedef enum Redirection Redirection;
 
